@@ -10,8 +10,8 @@
 In search.py, you will implement generic search algorithms which are called 
 by Pacman agents (in searchAgents.py).
 """
-
 import util
+from util import *
 
 class SearchProblem:
   """
@@ -84,6 +84,59 @@ def depthFirstSearch(problem):
   print "Start's successors:", problem.getSuccessors(problem.getStartState())
   """
   "*** YOUR CODE HERE ***"
+  from game import Directions
+  s = Directions.SOUTH
+  w = Directions.WEST
+  n = Directions.NORTH
+  e = Directions.EAST
+  stack = Stack()
+  immediateSuccesor = problem.getSuccessors(problem.getStartState())
+  previousState = problem.getStartState()
+  exploredStates = []
+  exploredNodes = []
+  for i in range(len(immediateSuccesor)):
+    tempList = [previousState,immediateSuccesor[i]]
+    stack.push(tempList)
+    if(tempList[0] not in exploredStates):
+      exploredStates.append(tempList[0])
+    exploredNodes.append(tempList)
+
+  while(not stack.isEmpty()):
+    item = stack.pop()
+    if(item[1][0] in exploredStates):
+      continue
+    exploredStates.append(item[1][0])
+    tempList = problem.getSuccessors(item[1][0])
+    for i in tempList:
+      stack.push([item[1][0],i])
+    exploredNodes.append(item)
+    if (problem.isGoalState(item[1][0])):
+      break
+  solution = []
+  currentState = exploredNodes[len(exploredStates)][1][0]
+  print("currentState : " + str(currentState))
+  stateState = problem.getStartState()
+  print(exploredNodes)
+  while (True):
+    for i in exploredNodes:
+      if(i[1][0] == currentState):
+        currentState = i[0]
+        solution.append(i[1])
+        break
+    if(currentState == stateState):
+      break
+  solution.reverse()
+  directions = []
+  for i in solution:
+    if(i[1] == 'West'):
+      directions.append(w)
+    if (i[1] == 'South'):
+      directions.append(s)
+    if (i[1] == 'North'):
+      directions.append(n)
+    if (i[1] == 'East'):
+      directions.append(e)
+  return directions
   util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
